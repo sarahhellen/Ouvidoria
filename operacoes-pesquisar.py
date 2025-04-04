@@ -1,6 +1,6 @@
-from operacoesbd import *
+from ouvidoria import *
 
-conn = criarConexao('127.0.0.1','root','12345','locadora_ana')
+conn = criarConexao('127.0.0.1','root','12345','ouvidoria')
 
 codigoFilme = int(input("Digite o código: "))
 consultaPesquisaFilmes = 'select * from filme where codigo = %s'
