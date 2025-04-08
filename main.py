@@ -1,15 +1,6 @@
 from ouvidoriabd import *
 opcao = 1
-'''
- menu com 7 opções:  
-• 1) Listagem das Manifestações 
-• 2) Listagem de Manifestações por Tipo 
-• 3) Criar uma nova Manifestação  
-• 4) Exibir quantidade de manifestações  
-• 5) Pesquisar uma manifestação por código 
-• 6) Excluir uma Manifestação pelo Código 
-• 7) Sair do Sistema.
-'''
+
 conn = criarConexao('127.0.0.1','root','Yennefer8!','ouvidoria')
 
 while opcao != 7:
@@ -17,43 +8,116 @@ while opcao != 7:
     opcao = int(input("Digite a sua opção: "))
 
     if opcao == 1:
-        consultaListagemManifestacao = 'select count(*) from Ouvidoria'
-        manifestacoes = listarBancoDados(conn, consultaListagemManifestacao)
+        if opcao == 1:
+            consultaListagem = "select * from manifestacao"
+            manifestacao = listarBancoDados(conn, consultaListagem)
 
-        if len(manifestacoes) == 0:
-            print("Não existem manifestações a serem exibidas")
-        else:
-            print("Lista de Manifestações:")
-            for manifestacao in manifestacoes:
-                print("- Código", manifestacao[0], "tem a seguinte manifestação:", manifestacao[1])
+            if len(manifestacao) == 0:
+                print("Nenhuma manifestação cadastrada.")
+            else:
+                print("Lista de Manifestações: ")
+                for item in manifestacao:
+                    print("Manifestação de Código", str(item[0]) + ":", item[1], "\n Tipo:", item[4], "\n Autor:", item[2], "\n Ouvidor:", item[3])
+
 
     elif opcao == 2:
-        nomeFilme = input("Digite o nome do novo filme: ")
-        sinopseFilme = input("Digite a sinopse do novo filme: ")
-        anoFilme = int(input("Digite o ano do novo filme: "))
+        while True:
+            tipolistagem = int(input(" Qual tipo de manifestação a listar \n 1) Reclamação \n 2) Elogio \n 3) Sugestão \n Digite o código da manifestação desejada: "))
+            if tipolistagem == 1:
+                tipo = "Reclamação"
+                break
+            elif tipolistagem == 2:
+                tipo = "Elogio"
+                break
+            elif tipolistagem == 3:
+                tipo = "Sugestão"
+                break
+            else:
+                print("Opção inválida. Tente novamente.\n")
 
-        consultaInsert = 'insert into Filme (nome,sinopse,ano) values (%s,%s,%s)'
-        dados = [nomeFilme, sinopseFilme, anoFilme]
-
-        insertNoBancoDados(conn, consultaInsert, dados)
-        print("Filme cadastrado com sucesso!")
+        consultaListagemTipo = "select * from manifestacao where tipo like %s"
+        dados = [tipo]
+        manifestacao = listarBancoDados(conn, consultaListagemTipo, dados)
+        if len(manifestacao) == 0:
+            print("Nenhuma manifestação cadastrada.")
+        else:
+            print("Lista de Manifestações do tipo", tipo.capitalize())
+            for item in manifestacao:
+                print("Manifestação de Código", str(item[0]) + ":", item[1], "\n Tipo:", item[4], "\n Autor:", item[2],"\n Ouvidor:", item[3])
 
     elif opcao == 3:
-        codigoFilme = int(input("Digite o código: "))
-        consultaPesquisaFilmes = 'select * from filme where codigo = %s'
-        dados = [codigoFilme]
+        novaManifestacao = input("Nova manifestação: ")
+        autor = input("Digite seu nome completo: ")
+        ouvidor = input("Nome do Ouvidor: ")
+        while True:
+            tipoNovaManifestacao = int(input(
+                "Tipos de Manifestações: \n 1) Reclamação \n 2) Elogio \n 3) Sugestão \nTipo da Nova Manifestação: "))
 
-        manifestacoes = listarBancoDados(conn, consultaPesquisaFilmes, dados)
+            if tipoNovaManifestacao == 1:
+                tipo = "Reclamação"
+                break
+            elif tipoNovaManifestacao == 2:
+                tipo = "Elogio"
+                break
+            elif tipoNovaManifestacao == 3:
+                tipo = "Sugestão"
+                break
+            else:
+                print("Opção inválida. Tente novamente.\n")
 
-        if len(manifestacoes) == 0:
-            print("Não existem filmes a serem exibidos")
+        consultaInsert = "insert into manifestacao (descricao,autor,ouvidor,tipo) values (%s,%s,%s,%s)"
+        dados = [novaManifestacao, autor, ouvidor, tipo]
+
+        if novaManifestacao == "" or autor == "" or ouvidor == "":
+            print("Manifestação ou Tipo inválido.")
+
         else:
-            print("Filme encontrado: Nome do Filme:", manifestacoes[0][1], "no ano", manifestacoes[0][3])
+            insertNoBancoDados(conn, consultaInsert, dados)
+            consultaCodigo = "select codigo from manifestacao where descricao like %s"
+            dados = [novaManifestacao]
+            manifestacao = listarBancoDados(conn, consultaCodigo, dados)
+            cod = manifestacao[0]
+            print("Manifestação cadastrada com sucesso. Seu código é: ", cod[0])
 
     elif opcao == 4:
+        consultaListagem = "select count(*) from manifestacao"
+        resultado = listarBancoDados(conn, consultaListagem)
+        quantidadeManifestacoes = resultado[0][0]
+        if resultado == 0:
+            print("Nenhuma manifestação cadastrada.")
+        else:
+            print("Até o momento, o sistema possui exatas", quantidadeManifestacoes, "manifestações.")
+
+    elif opcao == 5:
+        codigoManifestacao = int(input("Por favor, informe o código da manifestação: "))
+        consultaPesquisa = "select * from manifestacao where codigo = %s"
+        dados = [codigoManifestacao]
+
+        manifestacao = listarBancoDados(conn, consultaPesquisa, dados)
+
+        if len(manifestacao) == 0:
+            print("Nenhuma manifestação a ser exibida ou código inválido.")
+
+        else:
+            print("A manifestação de código", codigoManifestacao, "é:", manifestacao[0][1], "\nTipo:", manifestacao[0][4])
+
+    elif opcao == 6:
+        codigoManifestacao = int(input("Por favor, informe o código da manifestação a remover: "))
+
+        consultaRemover = "delete from manifestacao where codigo = %s"
+        dados = [codigoManifestacao]
+
+        linhasAlteradas = excluirBancoDados(conn, consultaRemover, dados)
+
+        if linhasAlteradas == 0:
+            print("Erro ao remover, código inválido.")
+
+        else:
+            print("Manifestação removida com sucesso!")
+
+    elif opcao != 7:
+        print("Opção inválida. Tente novamente! ")
+
+print("A Universidade XYZ agradece a colaboração!")
 
 encerrarConexao(conn)
-print("Obrigado por usar o sistema de ouvidoria!")
-
-
-

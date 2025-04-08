@@ -14,4 +14,5 @@ if len(manifestacao) == 0:
 else:
     print("A manifestação de código", codigoManifestacao, "é:", manifestacao[0][1], "\nTipo:",manifestacao[0][4])
 
+
 encerrarConexao(conn)
