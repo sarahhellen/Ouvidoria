@@ -8,16 +8,15 @@ while opcao != 7:
     opcao = int(input("Digite a sua opção: "))
 
     if opcao == 1:
-        if opcao == 1:
-            consultaListagem = "select * from manifestacao"
-            manifestacao = listarBancoDados(conn, consultaListagem)
+        consultaListagem = "select * from manifestacao"
+        manifestacao = listarBancoDados(conn, consultaListagem)
 
-            if len(manifestacao) == 0:
-                print("Nenhuma manifestação cadastrada.")
-            else:
-                print("Lista de Manifestações: ")
-                for item in manifestacao:
-                    print("Manifestação de Código", str(item[0]) + ":", item[1], "\n Tipo:", item[4], "\n Autor:", item[2], "\n Ouvidor:", item[3])
+        if len(manifestacao) == 0:
+            print("Nenhuma manifestação cadastrada.")
+        else:
+            print("Lista de Manifestações: ")
+            for item in manifestacao:
+                print("Manifestação de Código", str(item[0]) + ":", item[1], "\n Tipo:", item[4], "\n Autor:", item[2], "\n Ouvidor:", item[3])
 
 
     elif opcao == 2:
