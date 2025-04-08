@@ -1,0 +1,14 @@
+'''
+A primeira opção (Listagem das Manifestações), deve listar as manifestações todas.
+A segunda opção (Listagem de Manifestações por Tipo), deve questionar ao usuário qual
+tipo de manifestação gostaria de listar (reclamação, elogio ou sugestão) e, na seguida,
+serão exibidas as manifestações pelo tipo indicado.
+Na terceira opção (Criar uma nova Manifestação), o usuário deve ser questionado com
+todos os campos necessários para criação de uma nova manifestação.
+Na quarta opção (Exibir quantidade de manifestações) deve ser exibida basicamente a
+quantidade de manifestações.
+A quinta opção (Pesquisar uma manifestação por código), deve solicitar o código e
+informar os campos da manifestação pesquisada.
+A sexta opção (Excluir uma Manifestação pelo Código), deve solicitar o código e proceder
+com a exclusão da linha no banco de dados.
+'''

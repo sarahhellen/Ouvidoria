@@ -1,22 +1,31 @@
-from ouvidoria import *
+from ouvidoriabd import *
 opcao = 1
+'''
+ menu com 7 opções:  
+• 1) Listagem das Manifestações 
+• 2) Listagem de Manifestações por Tipo 
+• 3) Criar uma nova Manifestação  
+• 4) Exibir quantidade de manifestações  
+• 5) Pesquisar uma manifestação por código 
+• 6) Excluir uma Manifestação pelo Código 
+• 7) Sair do Sistema.
+'''
+conn = criarConexao('127.0.0.1','root','Yennefer8!','ouvidoria')
 
-conn = criarConexao('127.0.0.1','root','12345','ouvidoria')
-
-while opcao != 6:
-    print("\n1) Listar \n2) Adicionar \n3) Pesquisar \n4) Remover \n5) Substituir \n6) Sair")
+while opcao != 7:
+    print("\n1) Listar manifestações \n2) Listagem de manifestações por tipo \n3) Criar manifestação \n4) Exibir quantidade de manifestações \n5) Pesquisar manifestação por código \n6) Excluir manifestação por código \n7) Sair do sistema")
     opcao = int(input("Digite a sua opção: "))
 
     if opcao == 1:
-        consultaListagemFilmes = 'select * from filme'
-        filmes = listarBancoDados(conn, consultaListagemFilmes)
+        consultaListagemManifestacao = 'select count(*) from Ouvidoria'
+        manifestacoes = listarBancoDados(conn, consultaListagemManifestacao)
 
-        if len(filmes) == 0:
-            print("Não existem filmes a serem exibidos")
+        if len(manifestacoes) == 0:
+            print("Não existem manifestações a serem exibidas")
         else:
-            print("Lista de Itens")
-            for item in filmes:
-                print("- Nome do Filme:", item[1], "no ano", item[3])
+            print("Lista de Manifestações:")
+            for manifestacao in manifestacoes:
+                print("- Código", manifestacao[0], "tem a seguinte manifestação:", manifestacao[1])
 
     elif opcao == 2:
         nomeFilme = input("Digite o nome do novo filme: ")
@@ -34,16 +43,17 @@ while opcao != 6:
         consultaPesquisaFilmes = 'select * from filme where codigo = %s'
         dados = [codigoFilme]
 
-        filmes = listarBancoDados(conn, consultaPesquisaFilmes, dados)
+        manifestacoes = listarBancoDados(conn, consultaPesquisaFilmes, dados)
 
-        if len(filmes) == 0:
+        if len(manifestacoes) == 0:
             print("Não existem filmes a serem exibidos")
         else:
-            print("Filme encontrado: Nome do Filme:", filmes[0][1], "no ano", filmes[0][3])
+            print("Filme encontrado: Nome do Filme:", manifestacoes[0][1], "no ano", manifestacoes[0][3])
 
-
-    elif opcao != 6:
-        print("Opção Inválida!")
+    elif opcao == 4:
 
 encerrarConexao(conn)
 print("Obrigado por usar o sistema de ouvidoria!")
+
+
+
